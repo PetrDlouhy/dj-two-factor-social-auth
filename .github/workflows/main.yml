@@ -102,4 +102,4 @@ jobs:
       - name: Running black
         run: black --check social_2fa tests
       - name: Running mypy
-        run: mypy social_2fa tests
+        run: mypy social_2fa tests --ignore-missing-imports
