@@ -1,0 +1,3 @@
+django-model-utils>=2.0
+django-two-factor-auth
+social-auth-app-django
