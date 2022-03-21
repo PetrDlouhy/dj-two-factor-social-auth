@@ -52,6 +52,7 @@ setup(
     "If user authenticates through social auth, he will be enforced to go through 2FA (if he has it enabled)."
     "",
     long_description=readme + "\n\n" + history,
+    long_description_content_type="text/x-rst",
     author="Petr Dlouhý",
     author_email="petr.dlouhy@email.cz",
     url="https://github.com/PetrDlouhy/dj-2fa-social-auth",

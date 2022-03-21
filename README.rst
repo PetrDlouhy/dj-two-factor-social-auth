@@ -1,6 +1,6 @@
-=============================
+=============================================
 Django two factor auth for Django social auth
-=============================
+=============================================
 
 .. image:: https://badge.fury.io/py/dj-2fa-social-auth.svg
     :target: https://badge.fury.io/py/dj-2fa-social-auth
