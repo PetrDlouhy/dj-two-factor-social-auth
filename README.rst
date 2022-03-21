@@ -11,7 +11,7 @@ Django two factor auth for Django social auth
 .. image:: https://codecov.io/gh/PetrDlouhy/dj-2fa-social-auth/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/PetrDlouhy/dj-2fa-social-auth
 
-App connecting django-two-factor-auth and django-social-auth. If user authenticates through social auth, he will be enforced to go through 2FA (if he has it enabled).
+App connecting `django-two-factor-auth <https://github.com/jazzband/django-two-factor-auth>`_ and `social-app-django <https://github.com/python-social-auth/social-app-django>`_. If user authenticates through social auth, he will be enforced to go through 2FA (if he has 2FA enabled).
 
 Documentation
 -------------
@@ -20,6 +20,8 @@ The full documentation is at https://dj-2fa-social-auth.readthedocs.io.
 
 Quickstart
 ----------
+
+We expect, that you have already installed and configured `django-two-factor-auth <https://github.com/jazzband/django-two-factor-auth>`_ and `social-app-django <https://github.com/python-social-auth/social-app-django>`_ according to their documentation.
 
 Install Django two factor auth for Django social auth::
 
@@ -31,7 +33,9 @@ Add it to your `INSTALLED_APPS`:
 
     INSTALLED_APPS = (
         ...
-        'social_2fa.apps.Social2faConfig',
+        "two_factor",
+        "social_django",
+        "social_2fa",
         ...
     )
 
@@ -39,19 +43,24 @@ Add Django two factor auth for Django social auth's URL patterns:
 
 .. code-block:: python
 
-    from social_2fa import urls as social_2fa_urls
-
-
+    from django.urls import path
+    
+    
     urlpatterns = [
         ...
-        url(r'^', include(social_2fa_urls)),
+        path("", include("social_2fa.urls")),
         ...
     ]
 
-Features
---------
+Add social_2fa to your social pipeline in ``settings.py``:
 
-* TODO
+
+.. code-block:: python
+
+    SOCIAL_AUTH_PIPELINE = (
+        ...
+        "social_2fa.social_pipeline.two_factor_auth",
+    )
 
 Running Tests
 -------------
@@ -72,15 +81,3 @@ Development commands
 
     pip install -r requirements_dev.txt
     invoke -l
-
-
-Credits
--------
-
-Tools used in rendering this package:
-
-*  Cookiecutter_
-*  `cookiecutter-djangopackage`_
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`cookiecutter-djangopackage`: https://github.com/pydanny/cookiecutter-djangopackage
