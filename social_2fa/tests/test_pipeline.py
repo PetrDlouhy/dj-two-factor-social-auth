@@ -36,7 +36,7 @@ class PipelineTests(TestCase):
             user=self.user,
             request=self.request,
         )
-        self.assertEquals(ret, "details")
+        self.assertEqual(ret, "details")
 
     def test_pipeline_with_device_tfa_completed(self):
         """If two factor authentication is completed, don't redirect even if device is set"""
@@ -50,7 +50,7 @@ class PipelineTests(TestCase):
             user=self.user,
             request=self.request,
         )
-        self.assertEquals(ret, "details")
+        self.assertEqual(ret, "details")
 
     def test_pipeline_with_device(self):
         """Redirect to 2 factor authentication"""
