@@ -73,6 +73,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "tests.wsgi.application"
 
+SOCIAL_AUTH_PIPELINE = (
+    "social_core.pipeline.social_auth.social_details",
+    "social_core.pipeline.social_auth.social_uid",
+    "social_core.pipeline.social_auth.social_user",
+    "social_core.pipeline.user.get_username",
+    "social_core.pipeline.social_auth.associate_by_email",
+    "social_core.pipeline.user.create_user",
+    "social_core.pipeline.social_auth.associate_user",
+    "social_core.pipeline.social_auth.load_extra_data",
+    "social_core.pipeline.user.user_details",
+    "social_2fa.social_pipeline.two_factor_auth",
+)
+
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 

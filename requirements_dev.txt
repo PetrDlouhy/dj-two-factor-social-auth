@@ -3,3 +3,4 @@ twine
 wheel
 zest.releaser
 django-model-utils>=2.0
+-r requirements_test.txt
