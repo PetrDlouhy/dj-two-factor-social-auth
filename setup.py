@@ -48,7 +48,8 @@ requirements = open('requirements.txt').readlines()
 setup(
     name='dj-2fa-social-auth',
     version=version,
-    description="""App connecting django-two-factor-auth and django-social-auth. If user authenticates through social auth, he will be enforced to go through 2FA (if he has it enabled).""",
+    description="App connecting django-two-factor-auth and django-social-auth. "
+    "If user authenticates through social auth, he will be enforced to go through 2FA (if he has it enabled).""",
     long_description=readme + '\n\n' + history,
     author='Petr Dlouhý',
     author_email='petr.dlouhy@email.cz',
