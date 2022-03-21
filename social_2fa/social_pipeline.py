@@ -12,6 +12,7 @@ def two_factor_auth(strategy, details, *args, user=None, **kwargs):
         return details
     if default_device(user):
         return redirect(
-            reverse("social_2fa:two_factor_authentication") + f"?partial_token={current_partial.token}"
+            reverse("social_2fa:two_factor_authentication")
+            + f"?partial_token={current_partial.token}"
         )
     return details

@@ -11,4 +11,4 @@ urlpatterns = [
     ),
 ]
 
-app_name = 'social_2fa'
+app_name = "social_2fa"

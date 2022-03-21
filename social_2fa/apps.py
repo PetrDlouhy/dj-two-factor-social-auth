@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 
 class Social2faConfig(AppConfig):
-    name = 'social_2fa'
+    name = "social_2fa"

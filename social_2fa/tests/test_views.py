@@ -23,7 +23,7 @@ class AuthenticationViewTests(TestCase):
         response = self.client.post(address, {"otp_token": "123456"})
         self.assertContains(
             response,
-            '<li>Invalid token. Please make sure you have entered it correctly.</li>',
+            "<li>Invalid token. Please make sure you have entered it correctly.</li>",
             html=True,
         )
 
