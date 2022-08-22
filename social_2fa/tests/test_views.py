@@ -11,8 +11,8 @@ class AuthenticationViewTests(TestCase):
         response = self.client.get(address)
         self.assertContains(
             response,
-            '<input type="number" name="otp_token" min="1" max="999999" autofocus="autofocus" '
-            'inputmode="numeric" autocomplete="one-time-code" id="id_otp_token">',
+            '<input type="text" name="otp_token" maxlength="6" minlength="6" autofocus="autofocus"'
+            'pattern="[0-9]*" autocomplete="one-time-code" id="id_otp_token">',
             html=True,
         )
 
