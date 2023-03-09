@@ -3,6 +3,11 @@
 History
 -------
 
+0.1.2 (2023-03-09)
+++++++++++++++++++
+
+* Try to rename package to be compatible with poetry (https://github.com/python-poetry/poetry/issues/6996)
+
 0.1.1 (2023-03-08)
 ++++++++++++++++++
 

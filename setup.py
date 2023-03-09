@@ -46,7 +46,7 @@ history = open("HISTORY.rst").read().replace(".. :changelog:", "")
 requirements = open("requirements.txt").readlines()
 
 setup(
-    name="dj-2fa-social-auth",
+    name="dj-two-factor-social-auth",
     version=version,
     description="App connecting django-two-factor-auth and django-social-auth. "
     "If user authenticates through social auth, he will be enforced to go through 2FA (if he has it enabled)."
