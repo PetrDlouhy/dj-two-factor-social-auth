@@ -2,18 +2,18 @@
 Django two factor auth for Django social auth
 =============================================
 
-.. image:: https://badge.fury.io/py/dj-2fa-social-auth.svg
-    :target: https://badge.fury.io/py/dj-2fa-social-auth
+.. image:: https://badge.fury.io/py/dj-two-factor-social-auth.svg
+    :target: https://badge.fury.io/py/dj-two-factor-social-auth
 
-.. image:: https://codecov.io/gh/PetrDlouhy/dj-2fa-social-auth/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/PetrDlouhy/dj-2fa-social-auth
+.. image:: https://codecov.io/gh/PetrDlouhy/dj-two-factor-social-auth/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/PetrDlouhy/dj-two-factor-social-auth
 
 App connecting `django-two-factor-auth <https://github.com/jazzband/django-two-factor-auth>`_ and `social-app-django <https://github.com/python-social-auth/social-app-django>`_. If user authenticates through social auth, he will be enforced to go through 2FA (if he has 2FA enabled).
 
 Documentation
 -------------
 
-The full documentation is at https://dj-2fa-social-auth.readthedocs.io.
+The full documentation is at https://dj-two-factor-social-auth.readthedocs.io.
 
 Quickstart
 ----------
@@ -22,7 +22,7 @@ We expect, that you have already installed and configured `django-two-factor-aut
 
 Install Django two factor auth for Django social auth::
 
-    pip install dj-2fa-social-auth
+    pip install dj-two-factor-social-auth
 
 Add it to your `INSTALLED_APPS`:
 
