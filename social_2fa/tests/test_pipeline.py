@@ -63,4 +63,6 @@ class PipelineTests(TestCase):
             user=self.user,
             request=self.request,
         )
-        self.assertIn("/two-factor-social-auth/?partial_token=", ret.url)
+        self.assertIn("/two-factor-social-auth/", ret.url)
+        self.assertEqual(self.request.session["tfa_social_user_id"], self.user.id)
+        self.assertEqual(self.request.session["tfa_social_backend"], self.backend.name)
