@@ -3,4 +3,23 @@ include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
 include README.rst
-recursive-include social_2fa *.html *.png *.gif *js *.css *jpg *jpeg *svg *py
+include requirements.txt
+include requirements_test.txt
+
+recursive-include social_2fa/templates *
+recursive-include social_2fa/static *
+recursive-include social_2fa/locale *
+
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude *.so
+global-exclude *.dylib
+global-exclude *.dll
+global-exclude .DS_Store
+global-exclude .git
+global-exclude .gitignore
+global-exclude .hg
+global-exclude .hgignore
+global-exclude .svn
+global-exclude .svnignore

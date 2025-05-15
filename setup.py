@@ -5,7 +5,7 @@ import re
 import sys
 
 try:
-    from setuptools import setup
+    from setuptools import setup, find_packages
 except ImportError:
     from distutils.core import setup
 
@@ -56,9 +56,7 @@ setup(
     author="Petr Dlouhý",
     author_email="petr.dlouhy@email.cz",
     url="https://github.com/PetrDlouhy/dj-2fa-social-auth",
-    packages=[
-        "social_2fa",
-    ],
+    packages=find_packages(exclude=["tests", "tests.*"]),
     include_package_data=True,
     install_requires=requirements,
     license="BSD",
