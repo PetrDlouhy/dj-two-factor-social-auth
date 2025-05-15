@@ -1,7 +1,7 @@
 import django_otp
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.views.generic import FormView
-from django.contrib.auth import get_user_model
 from two_factor.forms import AuthenticationTokenForm
 from two_factor.utils import default_device
 
@@ -13,7 +13,10 @@ class AuthenticationView(FormView):
     def get_success_url(self):
         self.request.session["tfa_completed"] = True
         django_otp.login(self.request, self.device)
-        return reverse("social:complete", kwargs={"backend": self.request.session.get("tfa_social_backend")})
+        return reverse(
+            "social:complete",
+            kwargs={"backend": self.request.session.get("tfa_social_backend")},
+        )
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
