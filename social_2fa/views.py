@@ -1,7 +1,7 @@
 import django_otp
 from django.urls import reverse
 from django.views.generic import FormView
-from social_django.utils import load_strategy
+from django.contrib.auth import get_user_model
 from two_factor.forms import AuthenticationTokenForm
 from two_factor.utils import default_device
 
@@ -11,24 +11,16 @@ class AuthenticationView(FormView):
     form_class = AuthenticationTokenForm
 
     def get_success_url(self):
-        partial = self.get_partial()
         self.request.session["tfa_completed"] = True
-        self.request.user = self.get_partial().kwargs["user"]
         django_otp.login(self.request, self.device)
-        return (
-            reverse("social:complete", kwargs={"backend": partial.backend})
-            + f"?partial_token={partial.token}"
-        )
-
-    def get_partial(self):
-        strategy = load_strategy()
-        partial_token = self.request.GET.get("partial_token")
-        partial = strategy.partial_load(partial_token)
-        return partial
+        return reverse("social:complete", kwargs={"backend": self.request.session.get("tfa_social_backend")})
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
-        user = self.get_partial().kwargs["user"]
+        user_id = self.request.session.get("tfa_social_user_id")
+        if not user_id:
+            raise ValueError("No user found in session")
+        user = get_user_model().objects.get(id=user_id)
         kwargs["user"] = user
         self.device = default_device(user)
         kwargs["initial_device"] = self.device

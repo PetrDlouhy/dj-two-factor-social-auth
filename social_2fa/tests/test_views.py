@@ -4,11 +4,16 @@ from model_bakery import baker
 
 
 class AuthenticationViewTests(TestCase):
+    def setUp(self):
+        self.user = baker.make("User")
+        session = self.client.session
+        session["tfa_social_user_id"] = self.user.id
+        session["tfa_social_backend"] = "test-backend"
+        session.save()
+        self.address = reverse("social_2fa:two_factor_authentication")
+
     def test_get(self):
-        user = baker.make("User")
-        baker.make("Partial", token="foo", kwargs={"user": user.id})
-        address = reverse("social_2fa:two_factor_authentication") + "?partial_token=foo"
-        response = self.client.get(address)
+        response = self.client.get(self.address)
         self.assertContains(
             response,
             '<input type="text" name="otp_token" maxlength="6" minlength="6" autofocus="autofocus"'
@@ -17,10 +22,7 @@ class AuthenticationViewTests(TestCase):
         )
 
     def test_post_invalid_token(self):
-        user = baker.make("User")
-        baker.make("Partial", token="foo", kwargs={"user": user.id})
-        address = reverse("social_2fa:two_factor_authentication") + "?partial_token=foo"
-        response = self.client.post(address, {"otp_token": "123456"})
+        response = self.client.post(self.address, {"otp_token": "123456"})
         self.assertContains(
             response,
             "<li>Invalid token. Please make sure you have entered it correctly.</li>",
@@ -28,14 +30,11 @@ class AuthenticationViewTests(TestCase):
         )
 
     def test_post(self):
-        user = baker.make("User")
-        device = user.staticdevice_set.create()
+        device = self.user.staticdevice_set.create()
         device.token_set.create(token="123456")
-        partial = baker.make("Partial", token="foo", kwargs={"user": user.id})
-        address = reverse("social_2fa:two_factor_authentication") + "?partial_token=foo"
-        response = self.client.post(address, {"otp_token": "123456"})
+        response = self.client.post(self.address, {"otp_token": "123456"})
         self.assertRedirects(
             response,
-            f"/complete/{partial.backend}/?partial_token=foo",
+            "/complete/test-backend/",
             fetch_redirect_response=False,
         )
