@@ -7,8 +7,13 @@ class AuthenticationViewTests(TestCase):
     def setUp(self):
         self.user = baker.make("User")
         session = self.client.session
-        session["tfa_social_user_id"] = self.user.id
-        session["tfa_social_backend"] = "test-backend"
+        baker.make(
+            "Partial",
+            token="foo",
+            kwargs={"user": self.user.id},
+            backend="test-backend",
+        )
+        session["tfa_partial_token"] = "foo"
         session.save()
         self.address = reverse("social_2fa:two_factor_authentication")
 

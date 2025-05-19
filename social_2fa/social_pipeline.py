@@ -11,7 +11,6 @@ def two_factor_auth(strategy, details, *args, user=None, **kwargs):
     if request.session.get("tfa_completed", False):
         return details
     if default_device(user):
-        request.session["tfa_social_user_id"] = user.id
-        request.session["tfa_social_backend"] = current_partial.backend
+        request.session["tfa_partial_token"] = current_partial.token
         return redirect(reverse("social_2fa:two_factor_authentication"))
     return details
