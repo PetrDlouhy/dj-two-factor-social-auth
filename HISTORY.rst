@@ -3,6 +3,13 @@
 History
 -------
 
+1.0.2 (unreleased)
+++++++++++++++++++
+
+* Fix: take the session from the strategy instead of the pipeline's ``request``
+  keyword argument, which social-auth-core 5.x overwrites with the request data
+  when it resumes a partial pipeline (breaking the OTP round trip)
+
 1.0.1 (2025-05-19)
 ++++++++++++++++++
 

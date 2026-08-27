@@ -41,7 +41,7 @@ class PipelineTests(TestCase):
     def test_pipeline_with_device_tfa_completed(self):
         """If two factor authentication is completed, don't redirect even if device is set"""
         self.user.staticdevice_set.create(name="default")
-        self.request.session["tfa_completed"] = True
+        self.strategy.session_set("tfa_completed", True)
         ret = social_pipeline.two_factor_auth(
             self.strategy,
             backend=self.backend,
@@ -64,3 +64,23 @@ class PipelineTests(TestCase):
             request=self.request,
         )
         self.assertIn("/two-factor-social-auth/", ret.url)
+        self.assertTrue(self.strategy.session_get("tfa_partial_token"))
+
+    def test_pipeline_with_device_on_partial_resume(self):
+        """Redirect to 2 factor authentication when the pipeline is resumed.
+
+        ``social_core.utils._extend_partial_pipeline`` sets
+        ``kwargs["request"]`` to the request *data* when a partial pipeline is
+        resumed, so the step cannot read the session off that argument.
+        """
+        self.user.staticdevice_set.create(name="default")
+        ret = social_pipeline.two_factor_auth(
+            self.strategy,
+            backend=self.backend,
+            details="details",
+            pipeline_index=11,
+            user=self.user,
+            request={"code": "code", "state": "state"},
+        )
+        self.assertIn("/two-factor-social-auth/", ret.url)
+        self.assertTrue(self.strategy.session_get("tfa_partial_token"))
