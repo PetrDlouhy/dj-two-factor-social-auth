@@ -3,7 +3,7 @@
 History
 -------
 
-1.0.2 (unreleased)
+1.0.2 (2026-08-27)
 ++++++++++++++++++
 
 * Fix: take the session from the strategy instead of the pipeline's ``request``
