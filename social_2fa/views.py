@@ -33,8 +33,6 @@ class AuthenticationView(FormView):
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
         user = self.get_user()
-        if not user:
-            raise ValueError("No user found")
         kwargs["user"] = user
         self.device = default_device(user)
         kwargs["initial_device"] = self.device

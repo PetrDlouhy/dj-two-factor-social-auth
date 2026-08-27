@@ -67,19 +67,6 @@ jobs:
             SAAD_VERSION: '6.0.*'
       fail-fast: false
 
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     steps:
       - uses: actions/checkout@v4
       
@@ -106,21 +93,24 @@ jobs:
            else
              SAAD_PIN=""
            fi
-           pip install -e . -r requirements_test.txt coveralls psycopg2 \
+           pip install -e . -r requirements_test.txt \
              "Django==${{ matrix.DJANGO_VERSION }}" $SAAD_PIN
            pip list | grep -E '^(Django|social-auth-app-django|social-auth-core) '
 
       - name: Testing
         run: |
           PYTHONPATH=`pwd` python -W error::DeprecationWarning -m coverage run --source social_2fa runtests.py social_2fa
+          coverage report
           coverage xml
-        env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost/postgres"
 
+      # Needs the CODECOV_TOKEN repository secret: tokenless uploads are
+      # refused on a protected branch ("Token required because branch is
+      # protected"), which is why the badge went stale.
       - name: Upload coverage
         uses: codecov/codecov-action@v5
         with:
           files: ./coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
         continue-on-error: true
 
   lint:

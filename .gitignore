@@ -50,3 +50,7 @@ docs/_build
 # Vim
 *.sw[po]
 *.orig
+
+# Editor swap files
+*.swp
+*.swo

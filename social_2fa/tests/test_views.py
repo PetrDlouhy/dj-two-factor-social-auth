@@ -43,3 +43,18 @@ class AuthenticationViewTests(TestCase):
             "/complete/test-backend/",
             fetch_redirect_response=False,
         )
+
+    def test_partial_without_a_user_is_refused(self):
+        """A partial that carries no user cannot identify who to challenge."""
+        baker.make(
+            "Partial",
+            token="userless",
+            kwargs={"user": None},
+            backend="test-backend",
+        )
+        session = self.client.session
+        session["tfa_partial_token"] = "userless"
+        session.save()
+
+        with self.assertRaisesMessage(ValueError, "No user found"):
+            self.client.get(self.address)
