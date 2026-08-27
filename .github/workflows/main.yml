@@ -24,6 +24,9 @@ jobs:
       matrix:
         DJANGO_VERSION: ['4.1.*', '4.2.*', '5.0.*', '5.1.*', '5.2.*']
         python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        # 'resolver' means "whatever pip picks for this Django version";
+        # the pinned combinations are added under `include` below.
+        SAAD_VERSION: ['resolver']
         exclude:
           # Django 4.1
           - DJANGO_VERSION: '4.1.*'
@@ -44,6 +47,24 @@ jobs:
           # Django 5.2
           - DJANGO_VERSION: '5.2.*'
             python-version: '3.9'
+        include:
+          # social-auth-app-django 6.0 made social:begin POST-only and moved to
+          # social-auth-core 5.x, which overwrites the pipeline's `request`
+          # kwarg on partial resume. Both sides of that break need coverage, so
+          # pin them explicitly instead of trusting the resolver. 5.x needs
+          # Django >= 5.1, 6.x needs Django >= 5.2.
+          - DJANGO_VERSION: '5.1.*'
+            python-version: '3.13'
+            SAAD_VERSION: '5.6.*'
+          - DJANGO_VERSION: '5.2.*'
+            python-version: '3.13'
+            SAAD_VERSION: '5.6.*'
+          - DJANGO_VERSION: '5.2.*'
+            python-version: '3.10'
+            SAAD_VERSION: '6.0.*'
+          - DJANGO_VERSION: '5.2.*'
+            python-version: '3.13'
+            SAAD_VERSION: '6.0.*'
       fail-fast: false
 
     services:
@@ -60,10 +81,10 @@ jobs:
           - 5432:5432
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
               python-version: ${{ matrix.python-version }}
       - uses: actions/cache@v4
@@ -71,45 +92,62 @@ jobs:
           path: ~/.cache/pip
           key: ${{ hashFiles('setup.py') }}-${{ matrix.DJANGO_VERSION }}
 
+      # One resolution pass, with the pinned versions in it. Installing the
+      # requirements first and pinning Django afterwards leaves the set
+      # inconsistent - pip does not revisit what it already installed, so on
+      # Python 3.10+ an old Django ends up next to a social-auth-app-django /
+      # model-bakery / django-formtools that require Django >= 5.2, and
+      # `social_django.models` fails to import.
       - name: Install
         run: |
-           pip install setuptools
-           python setup.py develop
-           pip install -e .
-           pip install -r requirements_test.txt
-           pip install coveralls
-           pip install psycopg2
-           pip install Django==${{ matrix.DJANGO_VERSION }}
-           pip install codecov
+           pip install --upgrade pip
+           if [ "${{ matrix.SAAD_VERSION }}" != "resolver" ]; then
+             SAAD_PIN="social-auth-app-django==${{ matrix.SAAD_VERSION }}"
+           else
+             SAAD_PIN=""
+           fi
+           pip install -e . -r requirements_test.txt coveralls psycopg2 \
+             "Django==${{ matrix.DJANGO_VERSION }}" $SAAD_PIN
+           pip list | grep -E '^(Django|social-auth-app-django|social-auth-core) '
 
       - name: Testing
         run: |
           PYTHONPATH=`pwd` python -W error::DeprecationWarning -m coverage run --source social_2fa runtests.py social_2fa
-          coverage xml && codecov
+          coverage xml
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost/postgres"
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage.xml
+        continue-on-error: true
 
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
       - uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ hashFiles('setup.py') }}-${{ matrix.DJANGO_VERSION }}
+          key: lint-${{ hashFiles('setup.py') }}
 
       - name: Install
         run: |
-          pip install flake8 isort black mypy django-stubs dj_database_url types-six types-requests types-mock setuptools
-          python setup.py develop
+          pip install --upgrade pip
+          pip install flake8 isort black mypy django-stubs dj_database_url types-six types-requests types-mock
           pip install -e .
           pip install -r requirements.txt
       - name: Running Flake8
         run: flake8
+      # `python -m isort` fails from isort 9 on: the package ships a compiled
+      # `__main__` extension module, which runpy cannot execute.
       - name: Running isort
-        run: python -m isort social_2fa tests --check-only --diff
+        run: isort social_2fa tests --check-only --diff
       - name: Running black
         run: black --check social_2fa tests
       - name: Running mypy
