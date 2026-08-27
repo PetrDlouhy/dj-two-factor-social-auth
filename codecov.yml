@@ -1,0 +1,33 @@
+# Codecov reads this from the repository root; without it the uploader logs
+# "No config file could be found. Ignoring config." and every default applies.
+
+coverage:
+  status:
+    # Both statuses are informational: they show the number on the PR without
+    # blocking a merge. Drop `informational` (and set a `target`) to make them
+    # gate instead.
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        informational: true
+    patch:
+      default:
+        target: auto
+        informational: true
+
+comment:
+  layout: "reach, diff, files"
+  # Say nothing when a PR does not move coverage.
+  require_changes: true
+
+# Mirror the omit list in .coveragerc, so Codecov's percentage matches the one
+# the test job prints.
+ignore:
+  - "social_2fa/tests/**"
+  - "tests/**"
+  - "docs/**"
+  - "setup.py"
+  - "runtests.py"
+  - "manage.py"
+  - "tasks.py"
