@@ -3,8 +3,20 @@ include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
 include README.rst
-include requirements.txt
-include requirements_test.txt
+include *.py
+include *.txt
+include *.yml
+include .coveragerc
+include .editorconfig
+include tox.ini
+
+recursive-include docs *.bat
+recursive-include docs *.py
+recursive-include docs *.rst
+recursive-include docs Makefile
+recursive-include tests *.md
+recursive-include tests *.py
+recursive-include tests *.txt
 
 recursive-include social_2fa/templates *
 recursive-include social_2fa/static *
