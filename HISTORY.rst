@@ -6,7 +6,11 @@ History
 1.0.3 (unreleased)
 ++++++++++++++++++
 
-- Nothing changed yet.
+* Security fix: the session flag recording a completed 2FA step was never
+  cleared and was not tied to the user who completed it, so a session that had
+  passed 2FA once could finish a social login as another account without that
+  account's OTP step. The flag is now bound to the user and to the challenged
+  partial pipeline, and is consumed on the next pass of the pipeline step.
 
 
 1.0.2 (2026-08-27)
