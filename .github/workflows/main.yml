@@ -17,8 +17,9 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   tests:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    # ubuntu-latest is Ubuntu 26.04 from 2026-10-19, and actions/setup-python
+    # has no Python 3.9 build for it.
+    runs-on: ${{ matrix.python-version == '3.9' && 'ubuntu-24.04' || 'ubuntu-latest' }}
         
     strategy:
       matrix:
