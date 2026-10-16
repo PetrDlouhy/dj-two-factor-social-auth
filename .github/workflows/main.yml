@@ -97,9 +97,15 @@ jobs:
              "Django==${{ matrix.DJANGO_VERSION }}" $SAAD_PIN
            pip list | grep -E '^(Django|social-auth-app-django|social-auth-core) '
 
+      # The ignored warning is python3-openid's, not ours: its last release
+      # (3.2.0) imports defusedxml.cElementTree, which defusedxml deprecates,
+      # and social-auth-core 6.x imports that code when social_django loads.
+      # Fixed upstream, not released: https://github.com/necaris/python3-openid/pull/64
       - name: Testing
         run: |
-          PYTHONPATH=`pwd` python -W error::DeprecationWarning -m coverage run --source social_2fa runtests.py social_2fa
+          PYTHONPATH=`pwd` python -W error::DeprecationWarning \
+            -W "ignore:defusedxml.cElementTree is deprecated:DeprecationWarning:openid.oidutil" \
+            -m coverage run --source social_2fa runtests.py social_2fa
           coverage report
           coverage xml
 
