@@ -5,6 +5,8 @@ from social_django.utils import load_strategy
 from two_factor.forms import AuthenticationTokenForm
 from two_factor.utils import default_device
 
+from .social_pipeline import tfa_completed_marker
+
 
 class AuthenticationView(FormView):
     template_name = "two_factor/core/login.html"
@@ -19,8 +21,11 @@ class AuthenticationView(FormView):
 
     def get_success_url(self):
         partial = self.get_partial()
-        self.request.session["tfa_completed"] = True
-        self.request.user = self.get_user()
+        user = self.get_user()
+        self.request.session["tfa_completed"] = tfa_completed_marker(
+            user, partial.token
+        )
+        self.request.user = user
         django_otp.login(self.request, self.device)
         return reverse("social:complete", kwargs={"backend": partial.backend})
 

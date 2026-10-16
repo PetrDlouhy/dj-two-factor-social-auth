@@ -44,6 +44,21 @@ class AuthenticationViewTests(TestCase):
             fetch_redirect_response=False,
         )
 
+    def test_post_records_who_completed_2fa_for_which_partial(self):
+        """The pipeline step may only skip 2FA for this user and this partial"""
+        device = self.user.staticdevice_set.create(name="default")
+        device.token_set.create(token="123456")
+        response = self.client.post(self.address, {"otp_token": "123456"})
+        self.assertRedirects(
+            response,
+            "/complete/test-backend/",
+            fetch_redirect_response=False,
+        )
+        self.assertEqual(
+            self.client.session["tfa_completed"],
+            {"user": str(self.user.pk), "partial_token": "foo"},
+        )
+
     def test_partial_without_a_user_is_refused(self):
         """A partial that carries no user cannot identify who to challenge."""
         baker.make(
