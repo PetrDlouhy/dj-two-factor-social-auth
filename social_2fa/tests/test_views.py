@@ -27,6 +27,7 @@ class AuthenticationViewTests(TestCase):
         )
 
     def test_post_invalid_token(self):
+        self.user.staticdevice_set.create(name="default")
         response = self.client.post(self.address, {"otp_token": "123456"})
         self.assertContains(
             response,
@@ -35,7 +36,7 @@ class AuthenticationViewTests(TestCase):
         )
 
     def test_post(self):
-        device = self.user.staticdevice_set.create()
+        device = self.user.staticdevice_set.create(name="default")
         device.token_set.create(token="123456")
         response = self.client.post(self.address, {"otp_token": "123456"})
         self.assertRedirects(
