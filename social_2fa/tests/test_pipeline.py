@@ -3,8 +3,7 @@ import random
 from django.test import RequestFactory, TestCase
 from model_bakery import baker
 from social_core.backends.google import GoogleOAuth2
-from social_core.storage import BaseStorage
-from social_core.tests.strategy import TestStrategy
+from social_django.utils import load_strategy
 
 from .. import social_pipeline
 
@@ -13,17 +12,11 @@ class PipelineTests(TestCase):
     def setUp(self):
         random.seed(1)
         self.user = baker.make("User")
-        storage = BaseStorage()
-        storage.partial = baker.make(
-            "Partial",
-            token="foo",
-            kwargs={"user": self.user.id},
-        )
-        self.strategy = TestStrategy(storage=storage)
         factory = RequestFactory()
         self.request = factory.get("/")
         self.request.user = self.user
         self.request.session = self.client.session
+        self.strategy = load_strategy(self.request)
         self.backend = GoogleOAuth2()
 
     def test_pipeline(self):
