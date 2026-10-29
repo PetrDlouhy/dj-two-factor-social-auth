@@ -14,6 +14,8 @@ History
 * Fix: the OTP page answered 500 when no social login was waiting for it
   (a refreshed tab, the back button, an expired login). It now redirects to
   ``LOGIN_URL``.
+* Tested on Django 6.0 and 6.1, Python 3.14 and 3.15, and
+  social-auth-app-django 7
 
 
 1.0.2 (2026-08-27)
