@@ -11,6 +11,9 @@ History
   passed 2FA once could finish a social login as another account without that
   account's OTP step. The flag is now bound to the user and to the challenged
   partial pipeline, and is consumed on the next pass of the pipeline step.
+* Fix: the OTP page answered 500 when no social login was waiting for it
+  (a refreshed tab, the back button, an expired login). It now redirects to
+  ``LOGIN_URL``.
 
 
 1.0.2 (2026-08-27)
