@@ -23,8 +23,8 @@ jobs:
         
     strategy:
       matrix:
-        DJANGO_VERSION: ['4.1.*', '4.2.*', '5.0.*', '5.1.*', '5.2.*']
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        DJANGO_VERSION: ['4.1.*', '4.2.*', '5.0.*', '5.1.*', '5.2.*', '6.0.*', '6.1.*']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14', '3.15']
         # 'resolver' means "whatever pip picks for this Django version";
         # the pinned combinations are added under `include` below.
         SAAD_VERSION: ['resolver']
@@ -34,20 +34,54 @@ jobs:
             python-version: '3.12'
           - DJANGO_VERSION: '4.1.*'
             python-version: '3.13'
+          - DJANGO_VERSION: '4.1.*'
+            python-version: '3.14'
+          - DJANGO_VERSION: '4.1.*'
+            python-version: '3.15'
           # Django 4.2
           - DJANGO_VERSION: '4.2.*'
             python-version: '3.13'
+          - DJANGO_VERSION: '4.2.*'
+            python-version: '3.14'
+          - DJANGO_VERSION: '4.2.*'
+            python-version: '3.15'
           # Django 5.0
           - DJANGO_VERSION: '5.0.*'
             python-version: '3.9'
           - DJANGO_VERSION: '5.0.*'
             python-version: '3.13'
+          - DJANGO_VERSION: '5.0.*'
+            python-version: '3.14'
+          - DJANGO_VERSION: '5.0.*'
+            python-version: '3.15'
           # Django 5.1
           - DJANGO_VERSION: '5.1.*'
             python-version: '3.9'
+          - DJANGO_VERSION: '5.1.*'
+            python-version: '3.14'
+          - DJANGO_VERSION: '5.1.*'
+            python-version: '3.15'
           # Django 5.2
           - DJANGO_VERSION: '5.2.*'
             python-version: '3.9'
+          - DJANGO_VERSION: '5.2.*'
+            python-version: '3.15'
+          # Django 6.0
+          - DJANGO_VERSION: '6.0.*'
+            python-version: '3.9'
+          - DJANGO_VERSION: '6.0.*'
+            python-version: '3.10'
+          - DJANGO_VERSION: '6.0.*'
+            python-version: '3.11'
+          - DJANGO_VERSION: '6.0.*'
+            python-version: '3.15'
+          # Django 6.1
+          - DJANGO_VERSION: '6.1.*'
+            python-version: '3.9'
+          - DJANGO_VERSION: '6.1.*'
+            python-version: '3.10'
+          - DJANGO_VERSION: '6.1.*'
+            python-version: '3.11'
         include:
           # social-auth-app-django 6.0 made social:begin POST-only and moved to
           # social-auth-core 5.x, which overwrites the pipeline's `request`
@@ -107,8 +141,8 @@ jobs:
           PYTHONPATH=`pwd` python -W error::DeprecationWarning \
             -W "ignore:defusedxml.cElementTree is deprecated:DeprecationWarning:openid.oidutil" \
             -m coverage run --source social_2fa runtests.py social_2fa
-          coverage report
           coverage xml
+          coverage report --fail-under=100
 
       # Needs the CODECOV_TOKEN repository secret: tokenless uploads are
       # refused on a protected branch ("Token required because branch is

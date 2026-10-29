@@ -71,6 +71,8 @@ setup(
         "Framework :: Django :: 5.0",
         "Framework :: Django :: 5.1",
         "Framework :: Django :: 5.2",
+        "Framework :: Django :: 6.0",
+        "Framework :: Django :: 6.1",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
@@ -81,5 +83,7 @@ setup(
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
+        "Programming Language :: Python :: 3.15",
     ],
 )
