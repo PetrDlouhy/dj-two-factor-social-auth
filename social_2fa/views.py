@@ -1,4 +1,6 @@
 import django_otp
+from django.conf import settings
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import FormView
 from social_django.utils import load_strategy
@@ -11,6 +13,13 @@ from .social_pipeline import tfa_completed_marker
 class AuthenticationView(FormView):
     template_name = "two_factor/core/login.html"
     form_class = AuthenticationTokenForm
+
+    def dispatch(self, request, *args, **kwargs):
+        # The social login that asked for the OTP is no longer pending (done,
+        # expired, or never started), so there is no one to challenge.
+        if self.get_partial() is None:
+            return redirect(settings.LOGIN_URL)
+        return super().dispatch(request, *args, **kwargs)
 
     def get_user(self):
         partial = self.get_partial()

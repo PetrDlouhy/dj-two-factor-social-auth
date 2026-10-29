@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 from model_bakery import baker
+from social_django.models import Partial
 
 
 class AuthenticationViewTests(TestCase):
@@ -74,3 +76,25 @@ class AuthenticationViewTests(TestCase):
 
         with self.assertRaisesMessage(ValueError, "No user found"):
             self.client.get(self.address)
+
+    def test_page_without_a_pending_login_sends_to_login(self):
+        """No social login is waiting for the OTP step: never started or already done."""
+        session = self.client.session
+        del session["tfa_partial_token"]
+        session.save()
+
+        response = self.client.get(self.address)
+
+        self.assertRedirects(
+            response, settings.LOGIN_URL, fetch_redirect_response=False
+        )
+
+    def test_page_for_a_login_that_no_longer_waits_sends_to_login(self):
+        """The session still names a partial that is gone, e.g. in a refreshed tab."""
+        Partial.objects.filter(token="foo").delete()
+
+        response = self.client.post(self.address, {"otp_token": "123456"})
+
+        self.assertRedirects(
+            response, settings.LOGIN_URL, fetch_redirect_response=False
+        )
